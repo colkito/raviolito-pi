@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  cloudflare:
+    image: cloudflare/cloudflared:2023.3.1
+    entrypoint: cloudflared --no-autoupdate tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    # network_mode: host
+    restart: always
+
+  adguard:
+    image: adguard/adguardhome:v0.107.23
+    ports:
+      - '8089:80/tcp'
+      - '53:53/tcp'
+      - '53:53/udp'
+      - '67:67/udp'
+      - '443:443/tcp'
+      - '443:443/udp'
+      - '784:784/udp'
+      - '853:853/tcp'
+      - '853:853/udp'
+      - '3001:3000/tcp'
+      - '5443:5443/tcp'
+      - '5443:5443/udp'
+      - '8853:8853/udp'
+    volumes:
+      - ${USB_MOUNT_POINT}/adguardhome/conf:/opt/adguardhome/conf:rw
+      - ${USB_MOUNT_POINT}/adguardhome/work:/opt/adguardhome/work:rw
+    # network_mode: host
+    restart: always
+
+  ipfs:
+    image: ipfs/kubo:master-latest
+    ports:
+      - '38080:8080'
+      - '34001:4001'
+    volumes:
+      - ${USB_MOUNT_POINT}/ipfs/data:/data/ipfs:rw
+      - ${USB_MOUNT_POINT}/ipfs/export:/export:rw
+    # network_mode: host
+    restart: always
