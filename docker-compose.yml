@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   cloudflare:
-    image: cloudflare/cloudflared:2023.3.1
+    image: cloudflare/cloudflared:2023.4.0
     entrypoint: cloudflared --no-autoupdate tunnel run
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
