@@ -10,7 +10,7 @@ services:
     restart: always
 
   adguard:
-    image: adguard/adguardhome:v0.107.23
+    image: adguard/adguardhome:v0.107.28
     ports:
       - '8089:80/tcp'
       - '53:53/tcp'
