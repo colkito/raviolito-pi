@@ -41,3 +41,14 @@ services:
       - ${USB_MOUNT_POINT}/ipfs/export:/export:rw
     # network_mode: host
     restart: always
+
+  filebrowser:
+    image: filebrowser/filebrowser:v2.23.0
+    ports:
+      - '8082:80/tcp'
+    volumes:
+      - ${USB_MOUNT_POINT}/filebrowser:/srv:rw
+      - ${USB_MOUNT_POINT}/filebrowser/config/settings.json:/config/settings.json:rw
+      - ${USB_MOUNT_POINT}/filebrowser/database/database.db:/database/database.db:rw
+    # network_mode: host
+    restart: unless-stopped
