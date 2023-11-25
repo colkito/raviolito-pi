@@ -1,0 +1,21 @@
+version: '3.9'
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  filebrowser:
+    container_name: filebrowser
+    image: filebrowser/filebrowser:v2.26.0
+    ports:
+      - $PORT_80:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Argentina/Buenos_Aires
+    volumes:
+      - $FILEBROWSER_VOLUME_FILES/files:/srv
+      - $FILEBROWSER_VOLUME/filebrowser.json:/.filebrowser.json
+      - $FILEBROWSER_VOLUME/database.db:/database.db
+    restart: always
