@@ -14,7 +14,32 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=speedtest_tracker
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - TZ=America/Argentina/Buenos_Aires
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - $SPEEDTEST_TRACKER_VOLUME/config:/config
       - $SPEEDTEST_TRACKER_VOLUME/web:/etc/ssl/web
     restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    container_name: speedtest-tracker-db
+    image: mariadb:11.2.2
+    environment:
+      - MARIADB_DATABASE=speedtest_tracker
+      - MARIADB_USER=$DB_USERNAME
+      - MARIADB_PASSWORD=$DB_PASSWORD
+      - MARIADB_RANDOM_ROOT_PASSWORD=true
+    volumes:
+      - speedtest-db:/var/lib/mysql
+    restart: always
+
+volumes:
+  speedtest-db:
