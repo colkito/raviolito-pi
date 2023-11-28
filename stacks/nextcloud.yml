@@ -20,6 +20,12 @@ services:
       - $NEXTCLOUD_VOLUME/db:/var/lib/mysql
     restart: unless-stopped
 
+  memcached:
+    container_name: nextcloud_memcached
+    image: memcached:1.6.22-alpine
+    entrypoint: memcached -m 256
+    restart: unless-stopped
+
   nextcloud:
     container_name: nextcloud
     image: nextcloud:27.1.3
@@ -39,3 +45,4 @@ services:
     restart: unless-stopped
     depends_on:
       - db
+      - memcached
