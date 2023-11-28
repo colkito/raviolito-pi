@@ -5,14 +5,14 @@ networks:
     driver: bridge
 
 services:
-  nextcloud_db:
+  db:
     container_name: nextcloud_db
     image: mariadb:11.2.2
     environment:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
-      - MYSQL_ROOT_PASSWORD=$NEXTCLOUD_MYSQL_ROOT_PASSWORD
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=$NEXTCLOUD_DB_USERNAME
       - MYSQL_PASSWORD=$NEXTCLOUD_DB_PASSWORD
@@ -23,21 +23,19 @@ services:
   nextcloud:
     container_name: nextcloud
     image: nextcloud:27.1.3
+    ports:
+      - $PORT_80:80
+      - $PORT_443:443
     environment:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
-      - MYSQL_HOST=nextcloud_db
+      - MYSQL_HOST=db
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=$NEXTCLOUD_DB_USERNAME
       - MYSQL_PASSWORD=$NEXTCLOUD_DB_PASSWORD
     volumes:
-      - $NEXTCLOUD_VOLUME/config:/config
-      - $NEXTCLOUD_VOLUME/data:/data
       - $NEXTCLOUD_VOLUME/html:/var/www/html
-    ports:
-      - $PORT_80:80
-      - $PORT_443:443
     restart: unless-stopped
     depends_on:
-      - nextcloud_db
+      - db
