@@ -5,22 +5,37 @@ networks:
     driver: bridge
 
 services:
+  db:
+    container_name: speedtracker_db
+    image: mariadb:11.2.2
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=speedtest_tracker
+      - MYSQL_USER=$SPEEDTEST_TRACKER_DB_USERNAME
+      - MYSQL_PASSWORD=$SPEEDTEST_TRACKER_DB_PASSWORD
+    volumes:
+      - $SPEEDTEST_TRACKER_VOLUME/db:/var/lib/mysql
+    restart: unless-stopped
+
   speedtest-tracker:
-    container_name: speedtest-tracker
+    container_name: speedtracker
     image: ghcr.io/alexjustesen/speedtest-tracker:v0.13.3
     ports:
       - $PORT_80:80
       - $PORT_443:443
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
       - DB_CONNECTION=mysql
       - DB_HOST=db
       - DB_PORT=3306
       - DB_DATABASE=speedtest_tracker
-      - DB_USERNAME=$DB_USERNAME
-      - DB_PASSWORD=$DB_PASSWORD
-      - TZ=America/Argentina/Buenos_Aires
+      - DB_USERNAME=$SPEEDTEST_TRACKER_DB_USERNAME
+      - DB_PASSWORD=$SPEEDTEST_TRACKER_DB_PASSWORD
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $SPEEDTEST_TRACKER_VOLUME/config:/config
@@ -28,18 +43,3 @@ services:
     restart: unless-stopped
     depends_on:
       - db
-
-  db:
-    container_name: speedtest-tracker-db
-    image: mariadb:11.2.2
-    environment:
-      - MARIADB_DATABASE=speedtest_tracker
-      - MARIADB_USER=$DB_USERNAME
-      - MARIADB_PASSWORD=$DB_PASSWORD
-      - MARIADB_RANDOM_ROOT_PASSWORD=true
-    volumes:
-      - speedtest-db:/var/lib/mysql
-    restart: always
-
-volumes:
-  speedtest-db:
