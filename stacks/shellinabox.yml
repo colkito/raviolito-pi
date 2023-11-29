@@ -1,0 +1,17 @@
+version: '3.9'
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  shellinabox:
+    container_name: shellinabox
+    image: sspreitzer/shellinabox:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Argentina/Buenos_Aires
+    ports:
+      - $PORT_4200:4200
+    restart: always
