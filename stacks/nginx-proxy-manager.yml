@@ -1,0 +1,18 @@
+version: '3.9'
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  npm:
+    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:2.10.4
+    ports:
+      - 80:80
+      - $PORT_81:81
+      - 443:443
+    volumes:
+      - $NPM_VOLUME/data:/data
+      - $NPM_VOLUME/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
